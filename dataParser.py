@@ -2,6 +2,11 @@ import numpy as np
 from netCDF4 import Dataset
 import datetime, csv
 
+# Get data from https://daymet.ornl.gov/gridded/ from 1980-2015
+# Download and unzip the file and all the zip files in its subdirectories
+# change the path to wherever the data is on your machine
+
+
 print("Starting Up")
 
 years = ["year"]
