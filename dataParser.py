@@ -57,11 +57,14 @@ for year in range(1980, 2016):
 	print("Finished parsing through " + str(year))
 
 print("Creating matrix of values")
+
 lst = [years, month, day, tmax_arr, tmin_arr, prcpmm_arr, tav_arr, prcpcm_arr, relhum]
 lst_T = list(map(list, zip(*lst)))
 
 print("Writing into output.csv")
+
 with open("output.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(lst_T)
+
 print("Done!")
