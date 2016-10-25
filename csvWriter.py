@@ -41,17 +41,16 @@ for latitude in range(0,latStep):
 		if os.path.isfile(dataDir+'/'+filename):
 			print("File "+dataDir+'/'+filename+" already exists.")
 		else:
-			csv = requests.get(url, params=payload)
-			#csv = requests.get("https://daymet.ornl.gov/data/send/saveData?lat=43.1&lon=-85.3&year=2012")
-			"""
-				UNCOMMENT/comment to toggle print of filenames as written
-			"""
+			csvFile = requests.get(url, params=payload)
+			
 			print("Writing to "+dataDir+'/'+filename)
 			#create the new csv
 		
 			f = open(dataDir+'/'+filename,'w')
 			#write the csv
-			print(csv.text,file = f)
+			print(csvFile.text,file = f)
+
+			f.close()
 
 			print("Starting conversions")
 
@@ -67,11 +66,19 @@ for latitude in range(0,latStep):
 			prcpmm_arr = ["Precip (mm)"]
 			relhum = ["rh_ave"]
 
-			for line in f:
-				row = line.strip().split(",")
-				table.append(row)
+			f = open(dataDir+'/'+filename, 'r')
 
-			table = table[8:]
+			for line in f:
+				if len(line)==0:
+					continue
+				elif line[0] not in ['1', '2']:
+					continue
+				else:
+					row = line.strip().split(",")
+					table.append(row)
+
+			if len(table)==0:
+				print('table is empty')
 
 			table = list(map(list, zip(*table)))
 
@@ -100,13 +107,13 @@ for latitude in range(0,latStep):
 			lst = [years, month, day, tmax_arr, tmin_arr, prcpmm_arr, tav_arr, prcpcm_arr, relhum]
 			lst_T = list(map(list, zip(*lst)))
 
-			with open(filename, "w") as f:
+			with open(dataDir+'/'+filename, "w") as f:
 			    writer = csv.writer(f)
 			    writer.writerows(lst_T)
 
 
 			#System calls to generate Jocelines files. DEPENDENT ON FILE LOCATIONS
-			os.system("mv "+datadir+'/'+filename+ "./MoLS/Weather/"+filename)
+			os.system("mv "+dataDir+'/'+filename+ " ./MoLS/Weather/")
 			
 			#os.system("python ./MoLS/Run_Model.py")
 
