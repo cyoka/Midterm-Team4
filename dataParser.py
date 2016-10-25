@@ -20,6 +20,7 @@ prcpmm_arr = ["prcp (mm)"]
 relhum = ["Relative Humidity"]
 
 print("Parsing through .nc files")
+
 for year in range(1980, 2016):
 	path = "/Users/CYOka/Desktop/daymet/V3/CF_tarred/tars_" + str(year) + "/11015_" + str(year) + "/"
 	tmin = Dataset(path + "tmin.nc", "r")
@@ -34,7 +35,7 @@ for year in range(1980, 2016):
 	tav_set = (tmax_set + tmin_set) /2
 
 	i = 0
-	while i < 365:
+	while i < len(tmin.variables["yearday"]):
 		date = datetime.date(year, 1, 1) + datetime.timedelta(i)
 		years.append(year)
 		month.append(date.month)
@@ -47,20 +48,20 @@ for year in range(1980, 2016):
 	prcpcm_arr.extend(prcp_set/10)
 	prcpmm_arr.extend(prcp_set)
 	tav_arr.extend(tav_set)
-	relhum.extend((vp_set/(np.exp(((2.453*10**6)/461)*(tav_set*(-1))*6.11))*100))
+	relhum.extend((vp_set/(np.exp(((2.453*10**6)/461)*((1/273)-1/(tav_set+273))*6.11))*100))
 
 	tmin.close()
 	tmax.close()
 	vp.close()
 	prcp.close()
+	print("Finished parsing through " + str(year))
 
 print("Creating matrix of values")
 lst = [years, month, day, tmax_arr, tmin_arr, prcpmm_arr, tav_arr, prcpcm_arr, relhum]
 lst_T = list(map(list, zip(*lst)))
 
-print("Writing into .csv file")
+print("Writing into output.csv")
 with open("output.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(lst_T)
-
 print("Done!")
