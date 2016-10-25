@@ -9,15 +9,15 @@ import datetime, csv
 
 print("Starting Up")
 
-years = ["year"]
-month = ["month"]
-day = ["day"]
-tmin_arr = ["tmin"]
-tmax_arr = ["tmax"]
-tav_arr = ["tav"]
-prcpcm_arr = ["prcp (cm)"]
-prcpmm_arr = ["prcp (mm)"]
-relhum = ["Relative Humidity"]
+years = []
+month = []
+day = []
+tmin_arr = []
+tmax_arr = []
+tav_arr = []
+prcpcm_arr = []
+prcpmm_arr = []
+relhum = []
 
 print("Parsing through .nc files")
 
