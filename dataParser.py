@@ -2,69 +2,77 @@ import numpy as np
 from netCDF4 import Dataset
 import datetime, csv
 
+table = []
+
+years = ["Year"]
+month = ["Month"]
+day = ["Day"]
+tmin_arr = ["T_max"]
+tmax_arr = ["T_min"]
+tav_arr = ["Precip (mm)"]
+prcpcm_arr = ["T_ave"]
+prcpmm_arr = ["Precip (cm)"]
+relhum = ["rh_ave"]
+
+f = open("11015_10-24-2016.csv", "r")
+
+for line in f:
+	row = line.strip().split(",")
+	table.append(row)
+
+
+#lst_T = list(map(list, zip(*lst)))
+table = table[7:]
+
+table = list(map(list, zip(*table)))
+
+year_set = table[0]
+yearday = table[1]
+prcpmm = table[3]
+tmin_set = table[7]
+tmax_set = table[6]
+vp_set = table[8]
+
+
+
+print(year_set)
+print(yearday)
+print(prcpmm)
+print(tmin_set)
+print(tmax_set)
+print(vp_set)
+
 # Get data from https://daymet.ornl.gov/gridded/ from 1980-2015
 # Download and unzip the file and all the zip files in its subdirectories
 # change the path to wherever the data is on your machine
 
 
-print("Starting Up")
+#print("Starting Up")
 
-years = []
-month = []
-day = []
-tmin_arr = []
-tmax_arr = []
-tav_arr = []
-prcpcm_arr = []
-prcpmm_arr = []
-relhum = []
-
-print("Parsing through .nc files")
-
-for year in range(1980, 2016):
-	path = "/Users/CYOka/Desktop/daymet/V3/CF_tarred/tars_" + str(year) + "/11015_" + str(year) + "/"
-	tmin = Dataset(path + "tmin.nc", "r")
-	tmax = Dataset(path + "tmax.nc", "r")
-	vp = Dataset(path + "vp.nc", "r")
-	prcp = Dataset(path + "prcp.nc", "r")
-
-	tmin_set = tmin.variables["tmin"][:]
-	tmax_set = tmax.variables["tmax"][:]
-	vp_set = vp.variables["vp"][:]
-	prcp_set = prcp.variables["prcp"][:]
-	tav_set = (tmax_set + tmin_set) /2
-
-	i = 0
-	while i < len(tmin.variables["yearday"]):
-		date = datetime.date(year, 1, 1) + datetime.timedelta(i)
-		years.append(year)
-		month.append(date.month)
-		day.append(date.day)
-		i = i+1
+#years = ["Year"]
+#month = ["Month"]
+#day = ["Day"]
+#tmin_arr = ["T_max"]
+#tmax_arr = ["T_min"]
+#tav_arr = ["Precip (mm)"]
+#prcpcm_arr = ["T_ave"]
+#prcpmm_arr = ["Precip (cm)"]
+#relhum = ["rh_ave"]
 
 
-	tmin_arr.extend(tmin_set)
-	tmax_arr.extend(tmax_set)
-	prcpcm_arr.extend(prcp_set/10)
-	prcpmm_arr.extend(prcp_set)
-	tav_arr.extend(tav_set)
-	relhum.extend((vp_set/(np.exp(((2.453*10**6)/461)*((1/273)-1/(tav_set+273))*6.11))*100))
+	#relhum.extend((vp_set/(np.exp(((2.453*10**6)/461)*((1/273)-1/(tav_set+273))*6.11))*100))
 
-	tmin.close()
-	tmax.close()
-	vp.close()
-	prcp.close()
-	print("Finished parsing through " + str(year))
 
-print("Creating matrix of values")
 
-lst = [years, month, day, tmax_arr, tmin_arr, prcpmm_arr, tav_arr, prcpcm_arr, relhum]
-lst_T = list(map(list, zip(*lst)))
+#print("Creating matrix of values")
 
-print("Writing into output.csv")
+#lst = [years, month, day, tmax_arr, tmin_arr, prcpmm_arr, tav_arr, prcpcm_arr, relhum]
+#lst_T = list(map(list, zip(*lst)))
 
-with open("output.csv", "w") as f:
-    writer = csv.writer(f)
-    writer.writerows(lst_T)
+#print("Writing into output.csv")
 
-print("Done!")
+#with open("output.csv", "w") as f:
+#    writer = csv.writer(f)
+#    writer.writerows(lst_T)
+
+#print("Done!")
