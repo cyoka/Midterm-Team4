@@ -1,7 +1,7 @@
-import os
+import os, csv
 
-path = "./MoLS-master/test_data/"
-files = listdir(path)
+path = "./MoLS-data/"
+files = os.listdir(path)
 
 for fname in files:
 	if ".csv" in fname:
@@ -14,17 +14,12 @@ for fname in files:
 		table = []
 
 		for line in f:
-			if len(line)==0:
-				continue
-			else:
-				table.append(line.strip().split(","))
+			table.append(line.strip().split(","))
 
-		table[0].append("lat")
-		table[0].append("lon")
-		for i in range(1, len(table)):
+		for i in range(len(table)):
 			table[i].append(lat)
 			table[i].append(lon)
 
 	with open(path+fname, "w") as f:
 			writer = csv.writer(f)
-			writer.writerows(lst_T)
+			writer.writerows(table)
